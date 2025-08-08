@@ -1,0 +1,63 @@
+tags:
+  - name: Labels
+    description: Mengelola label atau grup kontak
+
+paths:
+  /labels:
+    get:
+      summary: Mengambil semua label milik pengguna
+      tags: [Labels]
+      responses:
+        '200':
+          description: Berhasil
+        '401':
+          description: Tidak terautentikasi
+    post:
+      summary: Membuat label baru
+      tags: [Labels]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLabel'
+      responses:
+        '201':
+          description: Label berhasil dibuat
+        '401':
+          description: Tidak terautentikasi
+
+  /labels/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID unik dari label
+    put:
+      summary: Mengupdate nama label
+      tags: [Labels]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLabel' # Bisa pakai ulang skema CreateLabel
+      responses:
+        '200':
+          description: Label berhasil diupdate
+        '401':
+          description: Tidak terautentikasi
+        '404':
+          description: Label tidak ditemukan
+    delete:
+      summary: Menghapus label dan referensinya di semua kontak
+      tags: [Labels]
+      responses:
+        '200':
+          description: Label berhasil dihapus
+        '401':
+          description: Tidak terautentikasi
+        '404':
+          description: Label tidak ditemukan

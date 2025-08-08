@@ -1,0 +1,111 @@
+tags:
+  - name: Contacts
+    description: Mengelola data kontak milik pengguna
+
+paths:
+  /contacts:
+    get:
+      summary: Mengambil daftar kontak (dengan filter, sort, pagination)
+      tags: [Contacts]
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          description: Cari kontak berdasarkan nama
+        - in: query
+          name: phone
+          schema:
+            type: string
+          description: Cari kontak berdasarkan nomor telepon
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            default: createdAt
+        - in: query
+          name: order
+          schema:
+            type: string
+            default: desc
+      responses:
+        '200':
+          description: Berhasil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedContacts'
+        '401':
+          description: Tidak terautentikasi
+
+    post:
+      summary: Membuat kontak baru
+      tags: [Contacts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContact'
+      responses:
+        '201':
+          description: Kontak berhasil dibuat
+        '400':
+          description: Input tidak valid
+        '401':
+          description: Tidak terautentikasi
+
+  /contacts/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID unik dari kontak
+    get:
+      summary: Mengambil detail satu kontak
+      tags: [Contacts]
+      responses:
+        '200':
+          description: Berhasil
+        '401':
+          description: Tidak terautentikasi
+        '404':
+          description: Kontak tidak ditemukan
+    put:
+      summary: Mengupdate kontak atau menambahkan label
+      tags: [Contacts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContact'
+      responses:
+        '200':
+          description: Kontak berhasil diupdate
+        '401':
+          description: Tidak terautentikasi
+        '404':
+          description: Kontak tidak ditemukan
+    delete:
+      summary: Menghapus kontak berdasarkan ID
+      tags: [Contacts]
+      responses:
+        '200':
+          description: Kontak berhasil dihapus
+        '401':
+          description: Tidak terautentikasi
+        '404':
+          description: Kontak tidak ditemukan

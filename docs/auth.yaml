@@ -1,0 +1,42 @@
+tags:
+  - name: Auth
+    description: API untuk Autentikasi Pengguna
+
+paths:
+  /auth/register:
+    post:
+      summary: Registrasi pengguna baru
+      tags: [Auth]
+      security: [] 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User' 
+      responses:
+        '201':
+          description: Pengguna berhasil dibuat.
+        '400':
+          description: Email sudah terdaftar atau input tidak valid.
+
+  /auth/login:
+    post:
+      summary: Login pengguna untuk mendapatkan token
+      tags: [Auth]
+      security: [] 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login' 
+      responses:
+        '200':
+          description: Login berhasil dan mengembalikan token JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Email atau password salah.

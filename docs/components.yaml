@@ -1,0 +1,122 @@
+schemas:
+  # SKEMA UNTUK AUTH
+  User:
+    type: object
+    required:
+      - name
+      - email
+      - password
+    properties:
+      name:
+        type: string
+        example: John Doe
+      email:
+        type: string
+        example: john.doe@example.com
+      password:
+        type: string
+        example: password123
+  Login:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: john.doe@example.com
+      password:
+        type: string
+        example: password123
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        description: JWT token untuk autentikasi
+
+  # SKEMA UNTUK CONTACT
+  Contact:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: ID unik kontak
+      name:
+        type: string
+        description: Nama kontak
+      email:
+        type: string
+        description: Alamat email kontak
+      phone:
+        type: string
+        description: Nomor telepon kontak
+      labels:
+        type: array
+        items:
+          type: string
+        description: Array berisi ID dari label yang terhubung
+      user:
+        type: string
+        description: ID dari user pemilik kontak
+  CreateContact:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        example: Budi Santoso
+      email:
+        type: string
+        example: budi.s@example.com
+      phone:
+        type: string
+        example: '081234567890'
+  UpdateContact:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
+      addLabelId:
+        type: string
+        description: ID dari label yang ingin ditambahkan ke kontak
+  PaginatedContacts:
+    type: object
+    properties:
+      contacts:
+        type: array
+        items:
+          $ref: '#/components/schemas/Contact'
+      pagination:
+        type: object
+        properties:
+          currentPage:
+            type: integer
+          totalPages:
+            type: integer
+          totalContacts:
+            type: integer
+          limit:
+            type: integer
+            
+  # SKEMA UNTUK LABEL
+  Label:
+    type: object
+    properties:
+      _id:
+        type: string
+      name:
+        type: string
+  CreateLabel:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        example: Keluarga
