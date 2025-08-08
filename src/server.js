@@ -1,11 +1,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import contactRoutes from './routes/contactRoutes.js';
 import labelRoutes from './routes/labelRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from '../swaggerConfig.js'; 
+import globalErrorHandler from './middleware/errorMiddleware.js';
 
 dotenv.config();
 
@@ -14,8 +16,10 @@ const PORT = process.env.PORT;
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/public', express.static('public'));
+app.use(globalErrorHandler);
 
 // Routes
 app.use('/api/v1/contacts', contactRoutes);

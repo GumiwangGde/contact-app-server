@@ -1,0 +1,14 @@
+# Abaikan folder node_modules dan file-file log
+node_modules
+npm-debug.log
+
+# Abaikan file environment, karena akan kita inject saat container berjalan
+.env
+
+# Abaikan file-file Docker itu sendiri
+Dockerfile
+.dockerignore
+
+# Abaikan folder Git
+.git
+.gitignore

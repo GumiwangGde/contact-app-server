@@ -1,24 +1,14 @@
 import * as authService from '../services/authService.js'
-import { successResponse, errorResponse } from '../helpers/responseHandler.js'
+import { successResponse } from '../helpers/responseHandler.js'
+import catchAsync from '../helpers/catchAsync.js';
 
-export const register = async (req, res) => {
-    try {
-        const newUser = await authService.register(req.body);
-        return successResponse(res, 'Registrasi berhasil', newUser, 201);
-    } catch (err) {
-        if (err.code === 11000) {
-            return errorResponse(res, 'Email sudah terdaftar', null, 400);
-        };
-        return errorResponse(res, 'Registrasi gagal', err);
-    }
-};
+export const register = catchAsync(async (req, res, next) => {
+    const newUser = await authService.register(req.body);
+    return successResponse(res, 'Registrasi berhasil', newUser, 201);
+});
 
-export const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const token = await authService.login(email, password);
-        return successResponse(res, 'Login berhasil', { token });
-    } catch (err) {
-        return errorResponse(res, err.message, null, 401);
-    }
-};
+export const login = catchAsync(async (req, res, next) => {
+    const { email, password } = req.body;
+    const token = await authService.login(email, password);
+    return successResponse(res, 'Login berhasil', { token });
+});

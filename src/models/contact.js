@@ -1,4 +1,5 @@
 import mongoose, { mongo } from 'mongoose';
+import { boolean } from 'zod/v4';
 
 const contactSchema = new mongoose.Schema({
     name: {
@@ -20,6 +21,14 @@ const contactSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    isDeleted: {
+        type: boolean,
+        default: false,
+    },
+    deletedAt: {
+        type: Date,
+        default: null,
+    }
 }, { timestamps: true });
 
 export const Contact = mongoose.model('Contact' , contactSchema);

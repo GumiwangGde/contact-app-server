@@ -1,0 +1,40 @@
+# Gunakan versi compose file yang modern
+version: '3.8'
+
+services:
+  # Layanan untuk aplikasi Node.js kita
+  app:
+    # Bangun image dari Dockerfile di direktori saat ini
+    build: .
+    # Beri nama container agar mudah dikenali
+    container_name: contact-app-server
+    # Map port 5000 di dalam container ke port 5000 di laptop kita
+    ports:
+      - "5000:5000"
+    # Inject environment variables dari file .env kita
+    env_file: .env
+    # Hubungkan folder src lokal ke dalam container.
+    # Ini memungkinkan nodemon untuk auto-restart saat kamu mengubah kode (hot-reloading).
+    volumes:
+      - ./src:/usr/src/app/src
+    # Pastikan container 'mongo' sudah berjalan sebelum 'app' dimulai
+    depends_on:
+      - mongo
+
+  # Layanan untuk database MongoDB
+  mongo:
+    # Gunakan image resmi MongoDB dari Docker Hub
+    image: mongo:latest
+    # Beri nama container
+    container_name: mongodb
+    # Map port 27017 (port default MongoDB)
+    ports:
+      - "27017:27017"
+    # Gunakan 'named volume' untuk menyimpan data database secara permanen.
+    # Tanpa ini, datamu akan hilang setiap kali container dimatikan.
+    volumes:
+      - mongo-data:/data/db
+
+# Definisikan 'named volume' yang kita sebutkan di atas
+volumes:
+  mongo-data:

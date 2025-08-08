@@ -1,15 +1,10 @@
+import { formatPaginatedResponse, getPaginationOptions } from '../helpers/paginationHelper.js';
 import * as contactRepository from '../repositories/contactRepository.js';
 
 export const getAllContact = async (userId, query) => {
-  const page = parseInt(query.page) || 1;
-  const limit = parseInt(query.limit) || 10;
-  const skip = (page - 1) * limit;
+  const { limit, skip, page, sortOptions } = getPaginationOptions(query);
 
-  const sortBy = query.sortBy || 'createdAt';
-  const order = query.order ? query.order.trim() : 'desc';
-  const sortOptions = { [sortBy]: order };
-
-  const filter = { user: userId };
+  const filter = { user: userId, isDeleted: false };
   if (query.name) {
     filter.name = { $regex: query.name, $options: 'i' };
   }
@@ -22,17 +17,7 @@ export const getAllContact = async (userId, query) => {
     contactRepository.count(filter)
   ]);
 
-  const totalPages = Math.ceil(totalContacts / limit);
-
-  return {
-    contacts,
-    pagination: {
-      currentPage: page,
-      totalPages,
-      totalContacts,
-      limit,
-    }
-  }
+  return formatPaginatedResponse(contacts, totalContacts, page, limit);
 };
 
 export const getContactById = async (userId, id) => {
@@ -64,7 +49,8 @@ export const updateContact = async (id, data, userId) => {
 };
 
 export const deleteContactById = async (userId, id) => {
-  return await contactRepository.findByIdAndDelete({_id: id, user: userId});
+  const deleteInfo = { isDeleted: true, deletedAt: new Date()};
+  return await contactRepository.findByIdAndDelete({_id: id, user: userId}, deleteInfo);
 };
 
 export const deleteContactByPhone = async (userId, phone) => {
