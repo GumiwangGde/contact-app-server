@@ -26,18 +26,16 @@ const handleJWTExpiredError = () => new AppError('Token Anda sudah kedaluwarsa. 
 
 
 const globalErrorHandler = (err, req, res, next) => {
-  let error = { ...err };
-  error.message = err.message;
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
 
-  // Proses error spesifik dari Mongoose atau JWT
-  if (error.name === 'CastError') error = handleCastErrorDB(error);
-  if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-  if (error.name === 'ValidationError') error = handleValidationErrorDB(error);
-  if (error.name === 'JsonWebTokenError') error = handleJWTError();
-  if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+  if (err.code === 11000) {
+    const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+    const message = `Nilai duplikat untuk ${value}. Silakan gunakan nilai lain.`;
+    err.statusCode = 409; // 409 Conflict
+    err.message = message;
+  }
 
-  // Kirim respons error yang sudah diformat
-  return errorResponse(res, error.message, error, error.statusCode || 500);
-};
+  res.status(err.statusCode).json({ status: err.status, message: err.message })};
 
 export default globalErrorHandler;

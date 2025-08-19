@@ -2,7 +2,7 @@ import  jwt  from "jsonwebtoken";
 import * as userRepository from '../repositories/userRepository.js'
 import AppError from "../helpers/appError.js";
 
-const signToken = (id) => {
+export const signToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
@@ -14,9 +14,6 @@ export const register = async (userData) => {
         email: userData.email,
         password: userData.password
     });
-
-    newUser.password = undefined;
-
     return newUser;
 };
 
